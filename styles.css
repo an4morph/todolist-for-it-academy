@@ -34,8 +34,9 @@ form button {
   color: #fff;
   border: none;
 }
-.list-error {
+.error {
   color: darkred;
+  text-decoration: none;
 }
 .edit-input {
   width: 100%;
