@@ -1,5 +1,3 @@
-console.log('страница загрузилась')
-
 const createEl = (tag, text, attrs = {}) => {
   const el = document.createElement(tag)
   el.textContent = text
