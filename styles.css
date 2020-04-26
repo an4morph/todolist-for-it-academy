@@ -1,0 +1,43 @@
+li {
+  font-size: 25px;
+}
+li button {
+  font-size: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.done {
+  text-decoration: line-through;
+}
+form {
+  padding: 15px;
+  background-color: #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+input, textarea {
+  width: 500px;
+  font-size: 20px;
+  border: 1px solid #888;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+textarea {
+  height: 100px;
+}
+form button {
+  width: 500px;
+  height: 40px;
+  font-size: 20px;
+  background-color: purple;
+  color: #fff;
+  border: none;
+}
+.list-error {
+  color: darkred;
+}
+.edit-input {
+  width: 100%;
+  display: block;
+}
