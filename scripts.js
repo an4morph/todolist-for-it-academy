@@ -4,10 +4,7 @@ const endpoint = 'http://localhost:3000'
 
 const fetchGetTaskList = () => {
   return fetch(`${endpoint}/list`)
-    .then(response => {
-      if (response.ok) return response.json()
-      throw new Error('Не удалось загрузить список задач')
-    })
+    .then(response => response.json())
 }
 
 const fetchEditTask = (id, body) => {
@@ -16,19 +13,11 @@ const fetchEditTask = (id, body) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  .then(response => {
-    if (response.ok) return response.json()
-    throw new Error('Не удалось отредактировать задачу')
-  })
 }
 
 const fetchDeleteTask = (id) => {
   return fetch(`${endpoint}/delete/${id}`, {
     method: 'DELETE',
-  })
-  .then(response => {
-    if (response.ok) return response.json()
-    throw new Error('Не удалось удалить задачу')
   })
 }
 
@@ -37,10 +26,6 @@ const fetchAddTask = (body) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-  })
-  .then(response => {
-    if (response.ok) return response.json()
-    throw new Error('Не удалось добавить задачу')
   })
 }
 
@@ -54,14 +39,13 @@ const createEl = (tag, text, attrs = {}) => {
 }
 
 const renderTask = (task) => {
-  const li = createEl('li')
-  const text = createEl('div', task.text)
+  const li = createEl('li', null, { class: task.done ? 'done' : '' })
+  const text = createEl('div', task.text, { class: 'text' })
+  const btnWrapper = createEl('div', null, { class: 'btn-wrapper' })
 
   const doneBtnText = !task.done ? 'Сделано' : 'Не сделано'
   const doneBtn = createEl('button', doneBtnText)
-
   const editBtn = createEl('button', ' Редактировать')
-
   const deleteBtn = createEl('button', 'Удалить')
   
   deleteBtn.addEventListener('click', () => {
@@ -73,6 +57,7 @@ const renderTask = (task) => {
     const input = createEl('input', { class: 'edit-input' })
     input.type = 'text'
     input.value = task.text
+    editBtn.disabled = true
     li.insertBefore(input, text)
     li.removeChild(text)
     input.addEventListener('blur', () => {
@@ -86,12 +71,11 @@ const renderTask = (task) => {
     .then(() => window.location.reload())
   })
 
-  if (task.done) li.classList.add('done')
-
   li.appendChild(text)
-  li.appendChild(doneBtn)
-  li.appendChild(editBtn)
-  li.appendChild(deleteBtn)
+  li.appendChild(btnWrapper)
+  btnWrapper.appendChild(doneBtn)
+  btnWrapper.appendChild(editBtn)
+  btnWrapper.appendChild(deleteBtn)
   list.appendChild(li)
 }
 
