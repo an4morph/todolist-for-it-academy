@@ -1,6 +1,11 @@
-const list = document.querySelector('#list')
-
-const endpoint = 'http://localhost:3000'
+const createEl = (tag, text, attrs = {}) => {
+  const el = document.createElement(tag)
+  el.textContent = text
+  Object.keys(attrs).forEach((key) => {
+    el.setAttribute(key, attrs[key])
+  })
+  return el
+}
 
 const fetchGetTaskList = () => {
   return fetch(`${endpoint}/list`)
@@ -29,18 +34,11 @@ const fetchAddTask = (body) => {
   })
 }
 
-const createEl = (tag, text, attrs = {}) => {
-  const el = document.createElement(tag)
-  el.textContent = text
-  Object.keys(attrs).forEach((key) => {
-    el.setAttribute(key, attrs[key])
-  })
-  return el
-}
+const endpoint = 'http://localhost:3000'
 
-const renderTask = (task) => {
-  const li = createEl('li', null, { class: task.done ? 'done' : '' })
-  const text = createEl('div', task.text, { class: 'text' })
+const renderTask = (task, list) => {
+  const li = createEl('li')
+  const text = createEl('div', task.text, { class: task.done ? 'text done' : 'text' })
   const btnWrapper = createEl('div', null, { class: 'btn-wrapper' })
 
   const doneBtnText = !task.done ? 'Сделано' : 'Не сделано'
@@ -79,12 +77,15 @@ const renderTask = (task) => {
   list.appendChild(li)
 }
 
-fetchGetTaskList()
-  .then(taskList => taskList.forEach(renderTask))
-  .catch((err) => {
-    const errDiv = createEl('div', err.message, { class: 'list-error' })
-    list.appendChild(errDiv)
-  })
+const renderTaskList = () => {
+  const list = createEl('ul', null, { id: 'list' })
+  document.body.appendChild(list)
+
+  fetchGetTaskList()
+    .then(taskList => taskList.forEach((item) => renderTask(item, list)))
+}
+
+renderTaskList()
 
 const input = document.querySelector('input[name="todo-text"]')
 const textarea = document.querySelector('textarea[name="todo-description"]')
