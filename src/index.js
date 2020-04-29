@@ -1,3 +1,5 @@
+import api from './api'
+
 const createEl = (tag, text, attrs = {}) => {
   const el = document.createElement(tag)
   el.textContent = text
@@ -6,47 +8,6 @@ const createEl = (tag, text, attrs = {}) => {
   })
   return el
 }
-
-const fetchGetTaskList = () => {
-  return fetch(`${endpoint}/list`)
-    .then(response => {
-      if (!response.ok) throw new Error('Ошибка удаления')
-      return response.json()
-    })
-}
-
-const fetchEditTask = (id, body) => {
-  return fetch(`${endpoint}/edit/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('Ошибка редактирования')
-  })
-}
-
-const fetchDeleteTask = (id) => {
-  return fetch(`${endpoint}/delete/${id}`, {
-    method: 'DELETE',
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('Ошибка удаления')
-  })
-}
-
-const fetchAddTask = (body) => {
-  return fetch(`${endpoint}/add`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('Ошибка cоздания')
-  })
-}
-
-const endpoint = 'http://localhost:3000'
 
 const renderTask = (task, list) => {
   const li = createEl('li', null)
@@ -60,7 +21,7 @@ const renderTask = (task, list) => {
   const errDiv = createEl('div', null, { class: 'error' })
   
   deleteBtn.addEventListener('click', () => {
-    fetchDeleteTask(task.id)
+    api.deleteTask(task.id)
       .then(() => {
         document.body.removeChild(list)
         renderTaskList()
@@ -79,7 +40,7 @@ const renderTask = (task, list) => {
     li.removeChild(text)
 
     input.addEventListener('blur', () => {
-      fetchEditTask(task.id, { text: input.value })
+      api.editTask(task.id, { text: input.value })
         .then(() => {
           document.body.removeChild(list)
           renderTaskList()
@@ -91,7 +52,7 @@ const renderTask = (task, list) => {
   })
 
   doneBtn.addEventListener('click', () => {
-    fetchEditTask(task.id, { done: !task.done })
+    api.editTask(task.id, { done: !task.done })
       .then(() => {
         document.body.removeChild(list)
         renderTaskList()
@@ -114,7 +75,7 @@ const renderTaskList = () => {
   const list = createEl('ul', null, { id: 'list' })
   document.body.appendChild(list)
 
-  fetchGetTaskList()
+  api.getTaskList()
     .then(taskList => taskList.forEach((item) => renderTask(item, list)))
     .catch((err) => {
       const errDiv = createEl('div', err.message, { class: 'error' })
@@ -130,13 +91,9 @@ const createBtn = document.querySelector('#create')
 const createErr = document.querySelector('#create-error')
 
 createBtn.addEventListener('click', () => {
-  fetchAddTask({ text: input.value, textarea: input.value })
+  api.addTask({ text: input.value, textarea: textarea.value })
   .then(taskList => taskList.forEach((item) => renderTask(item, list)))
     .catch((err) => {
       createErr.textContent = err.message
     })
 })
-
-
-
-
