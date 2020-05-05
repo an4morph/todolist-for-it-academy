@@ -73,8 +73,8 @@ const renderTask = (task, list) => {
 
 const renderTaskList = () => {
   const list = createEl('ul', null, { id: 'list' })
+  console.log(list)
   document.body.appendChild(list)
-
   api.getTaskList()
     .then(taskList => taskList.forEach((item) => renderTask(item, list)))
     .catch((err) => {
@@ -92,8 +92,12 @@ const createErr = document.querySelector('#create-error')
 
 createBtn.addEventListener('click', () => {
   api.addTask({ text: input.value, textarea: textarea.value })
-  .then(taskList => taskList.forEach((item) => renderTask(item, list)))
-    .catch((err) => {
-      createErr.textContent = err.message
-    })
+  .then(() => {
+    const list = document.getElementById('list')
+    document.body.removeChild(list)
+    renderTaskList()
+  })
+  .catch((err) => {
+    createErr.textContent = err.message
+  })
 })
